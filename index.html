@@ -231,6 +231,29 @@ var EX={
 };
 
 var CATS=[
+ {id:'frozen',t:'المجمدات',s:'مجمدات فروزن منتجات مجمدة',note:'منتجات مجمدة',ex:[],items:[
+  D('باكدج كبير','',75),
+  D('باكدج ميني','',75),
+  D('باكدج حبه كاملة','',85),
+  D('موتزريلا طبيعي أوريجينال','',240),
+  D('موتزريلا خليط','',180),
+  D('موتزريلا البركة','',190),
+  D('استربس عادي أو حار','',240),
+  D('بطاطس فرز أول 2.5 ك','',160),
+  D('صوص بيتزا كبير','',60),
+  D('صوص بيتزا صغير','',30)
+ ]},
+ {id:'offers',t:'العروض',s:'عروض عرض offer',note:'عروض لفترة محدودة · اكتب اختيارك في ملاحظات الطلب',ex:[],items:[
+  D('عرض الوحش: 3 كلاسيك زنجر أو بيف + 3 فريز','اكتب في الملاحظات: زنجر أو بيف',250),
+  D('عرض 2 ساندوتش شيش عيش بريوش كيزر + 2 بطاطس تشيز','',280),
+  D('عرض 2 برجر تركي تشيكن سنجل + 2 فريز','',200),
+  D('عرض 2 صاروخ + 2 فريز','',200),
+  D('عرض 2 كريب من اختيارك','اكتب اختيارك في الملاحظات',180),
+  D('عرض 2 بيتزا وسط من اختيارك','اكتب اختيارك في الملاحظات',280),
+  D('عرض 2 برجر كلاسيك بيف + 2 فريز','للدليفري',150),
+  D('عرض 2 بيف بيكون + 2 فرايز تشيز','',260),
+  D('عرض 3 بيتزا كبير من اختيارك','اكتب اختيارك في الملاحظات',500)
+ ]},
  {id:'pizza',t:'البيتزا',s:'بيتزا',note:'القسم الإيطالي · وسط وكبير',ex:EX.pizza,items:[
   PZ('مارجريتا','صوص بيتزا - موتزاريلا',80,120),
   PZ('خضروات',PB+'بصل - موتزاريلا',90,130),
@@ -472,6 +495,7 @@ function spy(){
 var cart=[];
 try{cart=JSON.parse(localStorage.getItem('hp-cart')||'[]');if(!Array.isArray(cart))cart=[];}catch(e){cart=[];}
 function persist(){try{localStorage.setItem('hp-cart',JSON.stringify(cart));}catch(e){}}
+function afterOrder(){setTimeout(function(){cart=[];persist();renderLines();renderBar();$('cnote').value='';},400);}
 function lineTotal(l){return (l.p+l.ex.reduce(function(s,e){return s+e[1];},0))*l.q;}
 function cartTotal(){return cart.reduce(function(s,l){return s+lineTotal(l);},0);}
 function cartCount(){return cart.reduce(function(s,l){return s+l.q;},0);}
@@ -624,15 +648,15 @@ $('send').addEventListener('click',function(e){
   var t=orderText();
   this.href='https://wa.me/'+WA+'?text='+encodeURIComponent(t);
   var m=$('msg');m.hidden=false;
-  m.textContent='اتفتح واتساب والطلب مكتوب جاهز. اضغط إرسال هناك عشان الطلب يوصل. لو واتساب ما اتفتحش، اضغط "نسخ الطلب" وابعته على 01012923148.';
-
+  m.textContent='اتفتح واتساب والطلب مكتوب جاهز. اضغط إرسال هناك عشان الطلب يوصل. اتفضت السلة تلقائي، ولو واتساب ما اتفتحش اضغط "نسخ الطلب" وابعته على 01012923148.';
+  afterOrder();
 });
 $('copy').addEventListener('click',function(){
   if(!validate())return;
   var t=orderText();
   var ta=$('otext');ta.value=t;
-  var done=function(){var m=$('msg');m.hidden=false;m.textContent='اتنسخ الطلب. الصقه في واتساب وابعته على 01012923148.';ta.hidden=true;};
-  var fb=function(){ta.hidden=false;ta.focus();ta.select();var m=$('msg');m.hidden=false;m.textContent='حدد النص ده وانسخه، وبعدين ابعته على واتساب 01012923148.';};
+  var done=function(){var m=$('msg');m.hidden=false;m.textContent='اتنسخ الطلب. الصقه في واتساب وابعته على 01012923148.';ta.hidden=true;afterOrder();};
+  var fb=function(){ta.hidden=false;ta.focus();ta.select();var m=$('msg');m.hidden=false;m.textContent='حدد النص ده وانسخه، وبعدين ابعته على واتساب 01012923148.';afterOrder();};
   try{
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,fb);}else{fb();}
   }catch(err){fb();}
