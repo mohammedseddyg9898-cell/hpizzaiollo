@@ -668,6 +668,19 @@ document.addEventListener('keydown',function(e){
 var tick=false;
 window.addEventListener('scroll',function(){if(tick)return;tick=true;requestAnimationFrame(function(){spy();tick=false;});},{passive:true});
 window.addEventListener('resize',setHH);
+/* تعديل الأسعار */
+(function(){
+var NEW={
+ frozen:{'باكدج ميني':[80],'باكدج حبه كاملة':[90],'موتزريلا طبيعي أوريجينال':[250],'موتزريلا خليط':[200],'موتزريلا البركة':[200],'استربس عادي أو حار':[250]},
+ pizza:{'فراخ':[150,190],'فراخ رانش':[165,210],'فراخ باربيكيو':[155,205],'فراخ مشروم':[155,205],'استربس':[155,205],'زنجر':[155,205]},
+ burger:{'كلاسيك برجر':[100,170],'تركي تشكن':[130,190]},
+ east:{'فراخ':[155,205,165,210],'فراخ رانش':[170,220,175,225],'شاورما':[180,230,180,235],'مكس فراخ':[185,240,195,245]},
+ bnz:{'فراخ':[100],'استربس':[125],'سوبر سوبريم فراخ':[135]},
+ rocket:{'فراخ':[115],'فراخ رانش':[125],'استربس':[135],'مكس فراخ':[155]},
+ crepe:{'بطاطس استربس':[100],'سوبر كرانشي':[110],'استربس':[120],'زنجر':[120],'فاهيتا':[120],'شيش':[120],'شاورما':[125],'مكس فراخ':[145]}
+};
+CATS.forEach(function(c){var m=NEW[c.id];if(!m)return;c.items.forEach(function(it){var p=m[it.n];if(p)p.forEach(function(v,i){it.o[i][1]=v;});});});
+})();
 
 renderMenu();setHH();renderBar();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(setHH);
